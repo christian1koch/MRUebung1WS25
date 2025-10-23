@@ -97,7 +97,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
       // XR globals.
       let xrButton = null;
-       let xrButtonNeu = null;
+       let xrButtonAR = null;
       let xrImmersiveRefSpace = null;
       let xrInlineRefSpace = null;
 
@@ -116,22 +116,22 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           onRequestSession: onRequestSession,
           onEndSession: onEndSession
         });
-        xrButtonNeu = new WebXRButton({
-          onRequestSession: onRequestSessionNeu,
+        xrButtonAR = new WebXRButton({
+          onRequestSession: onRequestSessionAR,
           onEndSession: onEndSession,
           textEnterXRTitle: "START AR",
           textXRNotFoundTitle: "AR NOT FOUND",
           textExitXRTitle: "EXIT  AR",
         });
         document.querySelector('header').appendChild(xrButton.domElement);
-        document.querySelector('header').appendChild(xrButtonNeu.domElement);
+        document.querySelector('header').appendChild(xrButtonAR.domElement);
 
         if (navigator.xr) {
           navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
             xrButton.enabled = supported;
           });
            navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
-            xrButtonNeu.enabled = supported;
+            xrButtonAR.enabled = supported;
           });
 
           // Start up an inline session, which should always be supported on
@@ -141,11 +141,11 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
             onSessionStarted(session);
             updateFov();
           });
-          navigator.xr.requestSession('inline').then((session) => {
-            inlineSession = session;
-            onSessionStarted(session);
-            updateFov();
-          });
+          // navigator.xr.requestSession('inline').then((session) => {
+          //   inlineSession = session;
+          //   onSessionStarted(session);
+          //   updateFov();
+          // });
         }
       }
 
@@ -159,9 +159,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         });
       }
 
-      function onRequestSessionNeu() {
+      function onRequestSessionAR() {
             return navigator.xr.requestSession('immersive-ar').then((session) => {
-                xrButtonNeu.setSession(session);
+                xrButtonAR.setSession(session);
                // Set a flag on the session so we can differentiate it from the
                // inline session.
                session.isImmersive = true;
@@ -243,6 +243,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         // Only reset the button when the immersive session ends.
         if (event.session.isImmersive) {
           xrButton.setSession(null);
+          xrButtonAR.setSession(null);
         }
       }
 
